@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -22,6 +23,17 @@ public class CreateOrReplaceHierarchyIntegrationTest {
             " \"Nick\": \"Sophie\"," +
             " \"Sophie\": \"Jonas\"" +
             "}";
+
+    private static final String EXPECTED_OUTPUT = "{" +
+            "          \"Jonas\": {" +
+            "              \"Sophie\": {" +
+            "                  \"Nick\": {" +
+            "                      \"Pete\": {}," +
+            "                      \"Barbara\": {}" +
+            "                  }" +
+            "} }" +
+            "}";
+
     ObjectMapper mapper = new ObjectMapper();
     @Autowired
     private MockMvc mockMvc;
@@ -32,6 +44,7 @@ public class CreateOrReplaceHierarchyIntegrationTest {
         mockMvc.perform(put("/api/v1/hierarchies")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(SAMPLE_INPUT_HIERARCHY))
+                .andExpect(content().json(EXPECTED_OUTPUT))
                 .andExpect(status().isOk());
     }
 }
