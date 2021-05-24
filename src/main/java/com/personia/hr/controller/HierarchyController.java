@@ -1,5 +1,8 @@
 package com.personia.hr.controller;
 
+import com.personia.hr.facade.HierarchyService;
+import com.personia.hr.model.Hierarchy;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,19 +13,14 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1")
+@RequiredArgsConstructor
 public class HierarchyController {
 
-    @PutMapping("/hierarchies")
-    public ResponseEntity<String> replace(@RequestBody  Map<String,String> supervisors) {
+    private final HierarchyService hierarchyService;
 
-        return ResponseEntity.ok("{" +
-                "          \"Jonas\": {" +
-                "              \"Sophie\": {" +
-                "                  \"Nick\": {" +
-                "                      \"Pete\": {}," +
-                "                      \"Barbara\": {}" +
-                "                  }" +
-                "} }" +
-                "}");
+    @PutMapping("/hierarchies")
+    public ResponseEntity<Hierarchy> replace(@RequestBody  Map<String,String> supervisors) {
+
+        return ResponseEntity.ok(hierarchyService.update(supervisors));
     }
 }
