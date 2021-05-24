@@ -31,7 +31,7 @@ public class HierarchyService {
                 employees.put(relationship.getValue(), supervisor);
                 unsupervisedList.add(relationship.getValue());
             }
-            supervisor.getTeam().getHierarchyList().add(supervised);
+            supervisor.getTeam().add(supervised);
         }
         if (unsupervisedList.size() > 1) {
             throw new MultipleRootHierarchyException();

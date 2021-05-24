@@ -19,8 +19,8 @@ public class TeamTest {
 
     @Test
     public void shouldSerializeList() throws JsonProcessingException {
-        team.getHierarchyList().add(Hierarchy.builder().supervisor("Pete").build());
-        team.getHierarchyList().add(Hierarchy.builder().supervisor("Barbara").build());
+        team.add(Hierarchy.builder().supervisor("Pete").build());
+        team.add(Hierarchy.builder().supervisor("Barbara").build());
         Map<String,Object> properties = team.any();
         assertThat(properties.size()).isEqualTo(2);
         assertThat(properties.get("Pete")).isEqualTo(Team.builder().build());
