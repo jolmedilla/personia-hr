@@ -23,7 +23,6 @@ public class HierarchyService {
         Set<String> employeesWithSupervisor = new HashSet<>();
         String tortoise = null;
         String hare = null;
-        int length = supervisors.size();
         int index = 0;
         for (Map.Entry<String,String> relationship: supervisors.entrySet()) {
             tortoise = index > 0 ? supervisors.get(tortoise) : supervisors.get(relationship.getKey());
