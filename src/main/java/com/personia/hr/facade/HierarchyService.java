@@ -1,20 +1,41 @@
 package com.personia.hr.facade;
 
+import com.personia.hr.exception.EmployeeHasTwoSupervisorsException;
+import com.personia.hr.exception.MultipleRootHierarchyException;
 import com.personia.hr.model.Hierarchy;
-import com.personia.hr.model.Team;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class HierarchyService {
 
-    public Hierarchy update(Map<String,String> supervisors) {
-        Hierarchy nick = Hierarchy.builder().supervisor("Nick").build();
-        nick.getTeam().getHierarchyList().add(Hierarchy.builder().supervisor("Pete").build());
-        nick.getTeam().getHierarchyList().add(Hierarchy.builder().supervisor("Barbara").build());
-        Hierarchy sophie = Hierarchy.builder().supervisor("Sophie").team(Team.builder().hierarchyList(Collections.singletonList(nick)).build()).build();
-        return Hierarchy.builder().supervisor("Jonas").team(Team.builder().hierarchyList(Collections.singletonList(sophie)).build()).build();
+    public Hierarchy update(Map<String,String> supervisors) throws EmployeeHasTwoSupervisorsException, MultipleRootHierarchyException {
+        Map<String,Hierarchy> employees = new HashMap<>();
+        Set<String> unsupervisedList = new HashSet<>();
+        Set<String> supervisedList = new HashSet<>();
+        for (Map.Entry<String,String> relationship: supervisors.entrySet()) {
+            if (supervisedList.contains(relationship.getKey())) {
+                throw new EmployeeHasTwoSupervisorsException(relationship.getKey());
+            }
+            Hierarchy supervised = employees.get(relationship.getKey());
+            Hierarchy supervisor = employees.get(relationship.getValue());
+            if (supervised == null) {
+                supervised = Hierarchy.builder().supervisor(relationship.getKey()).build();
+                employees.put(relationship.getKey(), supervised);
+                supervisedList.add(relationship.getKey());
+            }
+            unsupervisedList.remove(relationship.getKey());
+            if (supervisor == null) {
+                supervisor = Hierarchy.builder().supervisor(relationship.getValue()).build();
+                employees.put(relationship.getValue(), supervisor);
+                unsupervisedList.add(relationship.getValue());
+            }
+            supervisor.getTeam().getHierarchyList().add(supervised);
+        }
+        if (unsupervisedList.size() > 1) {
+            throw new MultipleRootHierarchyException();
+        }
+        return unsupervisedList.size() != 1 ? Hierarchy.builder().build() : employees.get(unsupervisedList.iterator().next());
     }
 }

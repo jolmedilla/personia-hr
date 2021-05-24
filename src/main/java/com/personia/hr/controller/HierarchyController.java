@@ -1,5 +1,7 @@
 package com.personia.hr.controller;
 
+import com.personia.hr.exception.EmployeeHasTwoSupervisorsException;
+import com.personia.hr.exception.MultipleRootHierarchyException;
 import com.personia.hr.facade.HierarchyService;
 import com.personia.hr.model.Hierarchy;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +21,7 @@ public class HierarchyController {
     private final HierarchyService hierarchyService;
 
     @PutMapping("/hierarchies")
-    public ResponseEntity<Hierarchy> replace(@RequestBody  Map<String,String> supervisors) {
+    public ResponseEntity<Hierarchy> replace(@RequestBody  Map<String,String> supervisors) throws EmployeeHasTwoSupervisorsException, MultipleRootHierarchyException {
 
         return ResponseEntity.ok(hierarchyService.update(supervisors));
     }
