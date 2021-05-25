@@ -14,14 +14,14 @@ public class ToggleConfiguration {
     @Bean
     @Primary
     @ConditionalOnProperty(prefix="toggles",value="use-persistence",havingValue = "false")
-    public HierarchyService hierarchyService(HierarchyServiceSimpleImpl hierarchyServiceSimple) {
-        return hierarchyServiceSimple;
+    public HierarchyService hierarchyServiceSimple() {
+        return new HierarchyServiceSimpleImpl();
     }
 
     @Bean
     @ConditionalOnProperty(prefix="toggles",value="use-persistence",havingValue = "true")
-    public HierarchyService hierarchyService(HierarchyServicePersistentImpl hierarchyServicePersistent){
-        return hierarchyServicePersistent;
+    public HierarchyService hierarchyServicePersistent(){
+        return new HierarchyServicePersistentImpl();
     }
 
 }

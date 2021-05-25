@@ -5,8 +5,7 @@ import com.personia.hr.exception.EmployeeHasTwoSupervisorsException;
 import com.personia.hr.exception.LoopInEmployeeHierarchyException;
 import com.personia.hr.exception.MultipleRootHierarchyException;
 import com.personia.hr.facade.HierarchyService;
-import com.personia.hr.facade.HierarchyServiceSimpleImpl;
-import com.personia.hr.model.Hierarchy;
+import com.personia.hr.model.EmployeeDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +23,7 @@ public class HierarchyController {
     private final HierarchyService hierarchyService;
 
     @PutMapping("/hierarchies")
-    public ResponseEntity<Hierarchy> replace(@RequestBody final String json)  {
+    public ResponseEntity<EmployeeDto> replace(@RequestBody final String json)  {
         try {
             return ResponseEntity.ok(hierarchyService.update(json));
         } catch (EmployeeHasTwoSupervisorsException |

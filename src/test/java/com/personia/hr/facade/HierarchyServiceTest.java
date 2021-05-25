@@ -1,11 +1,10 @@
 package com.personia.hr.facade;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.personia.hr.exception.EmployeeHasTwoSupervisorsException;
 import com.personia.hr.exception.LoopInEmployeeHierarchyException;
 import com.personia.hr.exception.MultipleRootHierarchyException;
-import com.personia.hr.model.Hierarchy;
+import com.personia.hr.model.EmployeeDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -40,15 +39,15 @@ interface HierarchyServiceTest<T extends HierarchyService> {
 
     @Test
     default void shouldReturnEmptyHierarchyWhenReceivesNoSupervisors() throws EmployeeHasTwoSupervisorsException, MultipleRootHierarchyException, LoopInEmployeeHierarchyException, JsonProcessingException {
-        Hierarchy hierarchy = hierarchyService().update("{}");
-        assertThat(hierarchy.getSupervisor()).isNull();
+        EmployeeDto hierarchy = hierarchyService().update("{}");
+        assertThat(hierarchy.getName()).isNull();
     }
 
     @ParameterizedTest
     @MethodSource("provideCorrectSamplesWithTheirRoots")
     default void shouldReturnBasicHierarchyWhenReceivesOneSupervisor(String relationships, String root) throws EmployeeHasTwoSupervisorsException, MultipleRootHierarchyException, LoopInEmployeeHierarchyException, JsonProcessingException {
-        Hierarchy hierarchy = hierarchyService().update(relationships);
-        assertThat(hierarchy.getSupervisor()).isEqualTo(root);
+        EmployeeDto hierarchy = hierarchyService().update(relationships);
+        assertThat(hierarchy.getName()).isEqualTo(root);
     }
 
     @ParameterizedTest

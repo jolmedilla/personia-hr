@@ -1,0 +1,41 @@
+package com.personia.hr.model;
+
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Builder;
+import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@Data
+@Builder
+public class EmployeeDto {
+
+    @JsonIgnore
+    private String name;
+
+    @JsonIgnore
+    private EmployeeDto supervisor;
+
+    @JsonIgnore
+    @Builder.Default
+    private List<EmployeeDto> team = new ArrayList<>();
+
+    public void add(EmployeeDto supervised) {
+        team.add(supervised);
+    }
+
+    @JsonAnyGetter
+    public Map<String,Object> any() {
+        return Collections.singletonMap(name,
+                team.stream()
+                .map(EmployeeDto::any)
+                .flatMap (map -> map.entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+    }
+
+}

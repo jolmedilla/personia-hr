@@ -4,11 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.personia.hr.exception.EmployeeHasTwoSupervisorsException;
 import com.personia.hr.exception.LoopInEmployeeHierarchyException;
 import com.personia.hr.exception.MultipleRootHierarchyException;
-import com.personia.hr.model.Hierarchy;
+import com.personia.hr.model.EmployeeDto;
 
 public interface HierarchyService {
 
-    Hierarchy update(final String json) throws EmployeeHasTwoSupervisorsException,
+    EmployeeDto update(final String json) throws EmployeeHasTwoSupervisorsException,
             MultipleRootHierarchyException,
             LoopInEmployeeHierarchyException,
             JsonProcessingException;

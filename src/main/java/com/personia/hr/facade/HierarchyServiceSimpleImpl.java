@@ -5,9 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.personia.hr.exception.EmployeeHasTwoSupervisorsException;
 import com.personia.hr.exception.LoopInEmployeeHierarchyException;
 import com.personia.hr.exception.MultipleRootHierarchyException;
-import com.personia.hr.model.Hierarchy;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import com.personia.hr.model.EmployeeDto;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,13 +16,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-@Component
-@RequiredArgsConstructor
 public class HierarchyServiceSimpleImpl implements HierarchyService {
 
-    private final ObjectMapper objectMapper;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
-    public Hierarchy update(final String json) throws EmployeeHasTwoSupervisorsException,
+    private Map<String,EmployeeDto> repository = new HashMap<>();
+
+    public EmployeeDto update(final String json) throws EmployeeHasTwoSupervisorsException,
             MultipleRootHierarchyException,
             LoopInEmployeeHierarchyException,
             JsonProcessingException {
@@ -32,15 +30,14 @@ public class HierarchyServiceSimpleImpl implements HierarchyService {
         if (relationships.size()>0 && relationships.size() != countRelationships(json)) {
             throw new EmployeeHasTwoSupervisorsException();
         }
-        Map<String,Hierarchy> repository = new HashMap<>();
         Set<String> employeesWithoutSupervisor = new HashSet<>();
         Map<String,String> relationShipMap = new HashMap<>();
         for (Entry<String,String> relationship: relationships.entrySet()) {
             relationShipMap.put(relationship.getKey(), relationship.getValue());
-            Hierarchy supervised = updateIfAbsentInRepository(repository, null, relationship.getKey(),false);
+            EmployeeDto supervised = updateIfAbsentInRepository(null, relationship.getKey(),false);
             employeesWithoutSupervisor.remove(relationship.getKey());
-            Hierarchy supervisor = updateIfAbsentInRepository(repository, employeesWithoutSupervisor, relationship.getValue(),true);
-            supervisor.getTeam().add(supervised);
+            EmployeeDto supervisor = updateIfAbsentInRepository(employeesWithoutSupervisor, relationship.getValue(),true);
+            supervisor.add(supervised);
         }
         if (!relationShipMap.isEmpty()) {
             searchForLoop(relationShipMap);
@@ -48,13 +45,13 @@ public class HierarchyServiceSimpleImpl implements HierarchyService {
         if (employeesWithoutSupervisor.size() > 1) {
             throw new MultipleRootHierarchyException();
         }
-        return employeesWithoutSupervisor.size() != 1 ? Hierarchy.builder().build() : repository.get(employeesWithoutSupervisor.iterator().next());
+        return employeesWithoutSupervisor.size() != 1 ? EmployeeDto.builder().build() : repository.get(employeesWithoutSupervisor.iterator().next());
     }
 
-    private Hierarchy updateIfAbsentInRepository(Map<String, Hierarchy> repository, Set<String> employeeSubSet, String employee, boolean updateSet) {
-        Hierarchy result = repository.get(employee);
+    private EmployeeDto updateIfAbsentInRepository(Set<String> employeeSubSet, String employee, boolean updateSet) {
+        EmployeeDto result = repository.get(employee);
         if (result == null) {
-            result = Hierarchy.builder().supervisor(employee).build();
+            result = EmployeeDto.builder().name(employee).build();
             repository.put(employee, result);
             if (updateSet) {
                 employeeSubSet.add(employee);
