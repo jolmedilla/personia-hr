@@ -6,10 +6,9 @@ import com.personia.hr.exception.LoopInEmployeeHierarchyException;
 import com.personia.hr.exception.MultipleRootHierarchyException;
 import com.personia.hr.model.Hierarchy;
 
-public interface HierarchyService {
-
-    Hierarchy update(final String json) throws EmployeeHasTwoSupervisorsException,
-            MultipleRootHierarchyException,
-            LoopInEmployeeHierarchyException,
-            JsonProcessingException;
+public class HierarchyServicePersistentImpl implements HierarchyService {
+    @Override
+    public Hierarchy update(String json) throws EmployeeHasTwoSupervisorsException, MultipleRootHierarchyException, LoopInEmployeeHierarchyException, JsonProcessingException {
+        return null;
+    }
 }

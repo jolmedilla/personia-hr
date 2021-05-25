@@ -5,6 +5,7 @@ import com.personia.hr.exception.EmployeeHasTwoSupervisorsException;
 import com.personia.hr.exception.LoopInEmployeeHierarchyException;
 import com.personia.hr.exception.MultipleRootHierarchyException;
 import com.personia.hr.facade.HierarchyService;
+import com.personia.hr.facade.HierarchyServiceSimpleImpl;
 import com.personia.hr.model.Hierarchy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

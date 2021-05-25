@@ -16,11 +16,11 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class HierarchyServiceTest {
+interface HierarchyServiceTest<T extends HierarchyService> {
 
-    private final HierarchyService hierarchyService = new HierarchyService(new ObjectMapper());
+    T hierarchyService();
 
-    private static Stream<Arguments> provideCorrectSamplesWithTheirRoots() {
+    static Stream<Arguments> provideCorrectSamplesWithTheirRoots() {
         return Stream.of(
                 Arguments.of("{\"Pete\":\"Nick\"}", "Nick"),
                 Arguments.of("{\"Pete\":\"Nick\",\"Barbara\":\"Nick\",\"Nick\":\"Sophie\"}", "Sophie"),
@@ -28,7 +28,7 @@ class HierarchyServiceTest {
         );
     }
 
-    private static Stream<Arguments> provideWrongSamplesAndTheirException() {
+    static Stream<Arguments> provideWrongSamplesAndTheirException() {
         return Stream.of(
                 Arguments.of("{\"Pete\":\"Barbara\",\"Barbara\":\"Nick\",\"Sophie\":\"Nick\",\"Nick\":\"Pete\"}", LoopInEmployeeHierarchyException.class),
                 Arguments.of("{\"Pete\":\"Barbara\",\"Barbara\":\"Nick\",\"Nick\":\"Pete\"}", LoopInEmployeeHierarchyException.class),
@@ -39,22 +39,22 @@ class HierarchyServiceTest {
     }
 
     @Test
-    public void shouldReturnEmptyHierarchyWhenReceivesNoSupervisors() throws EmployeeHasTwoSupervisorsException, MultipleRootHierarchyException, LoopInEmployeeHierarchyException, JsonProcessingException {
-        Hierarchy hierarchy = hierarchyService.update("{}");
+    default void shouldReturnEmptyHierarchyWhenReceivesNoSupervisors() throws EmployeeHasTwoSupervisorsException, MultipleRootHierarchyException, LoopInEmployeeHierarchyException, JsonProcessingException {
+        Hierarchy hierarchy = hierarchyService().update("{}");
         assertThat(hierarchy.getSupervisor()).isNull();
     }
 
     @ParameterizedTest
     @MethodSource("provideCorrectSamplesWithTheirRoots")
-    public void shouldReturnBasicHierarchyWhenReceivesOneSupervisor(String relationships, String root) throws EmployeeHasTwoSupervisorsException, MultipleRootHierarchyException, LoopInEmployeeHierarchyException, JsonProcessingException {
-        Hierarchy hierarchy = hierarchyService.update(relationships);
+    default void shouldReturnBasicHierarchyWhenReceivesOneSupervisor(String relationships, String root) throws EmployeeHasTwoSupervisorsException, MultipleRootHierarchyException, LoopInEmployeeHierarchyException, JsonProcessingException {
+        Hierarchy hierarchy = hierarchyService().update(relationships);
         assertThat(hierarchy.getSupervisor()).isEqualTo(root);
     }
 
     @ParameterizedTest
     @MethodSource("provideWrongSamplesAndTheirException")
-    public void shouldThrowException(String relationships, Class<Throwable> clazz)  {
-        assertThrows(clazz,() ->hierarchyService.update(relationships));
+    default void shouldThrowException(String relationships, Class<Throwable> clazz)  {
+        assertThrows(clazz,() ->hierarchyService().update(relationships));
     }
 
 }
