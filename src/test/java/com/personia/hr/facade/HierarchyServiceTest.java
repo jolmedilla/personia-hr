@@ -18,7 +18,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class HierarchyServiceTest {
 
@@ -36,17 +35,6 @@ public class HierarchyServiceTest {
         );
     }
 
-    static Stream<Arguments> provideWrongSamplesAndTheirException() {
-        return Stream.of(
-                Arguments.of("{\"Pete\":\"Barbara\",\"Barbara\":\"Nick\",\"Sophie\":\"Nick\",\"Nick\":\"Pete\"}", LoopInEmployeeHierarchyException.class),
-                Arguments.of("{\"Pete\":\"Barbara\",\"Barbara\":\"Nick\",\"Nick\":\"Pete\"}", LoopInEmployeeHierarchyException.class),
-                Arguments.of("{\"Andrew\":\"Sophie\",\"Pete\":\"Barbara\",\"Barbara\":\"Nick\",\"Nick\":\"Pete\",\"Sophie\":\"Juan\"}", LoopInEmployeeHierarchyException.class),
-                Arguments.of("{\"Pete\":\"Barbara\",\"Nick\":\"Sophie\"}", MultipleRootHierarchyException.class),
-                Arguments.of("{\"Pete\":\"Barbara\",\"Pete\":\"Sophie\"}", EmployeeHasTwoSupervisorsException.class)
-
-        );
-    }
-
     @Test
     public void shouldReturnEmptyHierarchyWhenReceivesNoSupervisors() throws EmployeeHasTwoSupervisorsException, MultipleRootHierarchyException, LoopInEmployeeHierarchyException, JsonProcessingException {
         EmployeeDto hierarchy = hierarchyService.update("{}");
@@ -58,12 +46,6 @@ public class HierarchyServiceTest {
     public void shouldReturnBasicHierarchyWhenReceivesOneSupervisor(String relationships, String root) throws EmployeeHasTwoSupervisorsException, MultipleRootHierarchyException, LoopInEmployeeHierarchyException, JsonProcessingException {
         EmployeeDto hierarchy = hierarchyService.update(relationships);
         assertThat(hierarchy.getName()).isEqualTo(root);
-    }
-
-    @ParameterizedTest
-    @MethodSource("provideWrongSamplesAndTheirException")
-    public void shouldThrowException(String relationships, Class<Throwable> clazz)  {
-        assertThrows(clazz,() ->hierarchyService.update(relationships));
     }
 
 }
