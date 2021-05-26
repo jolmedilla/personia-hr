@@ -1,8 +1,11 @@
 package com.personia.hr.configuration;
 
-import com.personia.hr.facade.HierarchyService;
-import com.personia.hr.facade.HierarchyServicePersistentImpl;
-import com.personia.hr.facade.HierarchyServiceSimpleImpl;
+import com.github.dozermapper.core.Mapper;
+import com.personia.hr.facade.HierarchyFactory;
+import com.personia.hr.facade.HierarchyFactorySimpleImpl;
+import com.personia.hr.facade.HierarchyFactoryPersistentImpl;
+import com.personia.hr.parser.JsonEmployeeToSupervisorParser;
+import com.personia.hr.repository.EmployeeRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,14 +17,14 @@ public class ToggleConfiguration {
     @Bean
     @Primary
     @ConditionalOnProperty(prefix="toggles",value="use-persistence",havingValue = "false")
-    public HierarchyService hierarchyServiceSimple() {
-        return new HierarchyServiceSimpleImpl();
+    public HierarchyFactory hierarchyServiceSimple(JsonEmployeeToSupervisorParser parser, HierarchyFactorySimpleImpl hierarchyFactory) {
+        return new HierarchyFactorySimpleImpl();
     }
 
     @Bean
     @ConditionalOnProperty(prefix="toggles",value="use-persistence",havingValue = "true")
-    public HierarchyService hierarchyServicePersistent(){
-        return new HierarchyServicePersistentImpl();
+    public HierarchyFactory hierarchyServicePersistent(EmployeeRepository employeeRepository, Mapper mapper){
+        return new HierarchyFactoryPersistentImpl(employeeRepository,mapper);
     }
 
 }

@@ -2,6 +2,8 @@ package com.personia.hr;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.personia.hr.repository.EmployeeRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -47,6 +49,14 @@ public class CreateOrReplaceHierarchyIntegrationTest {
     ObjectMapper mapper = new ObjectMapper();
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    @BeforeEach
+    public void setUp() {
+        employeeRepository.deleteAll();
+    }
 
     @Test
     public void shouldReturnOk() throws Exception {

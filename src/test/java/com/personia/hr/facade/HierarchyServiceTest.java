@@ -31,6 +31,7 @@ interface HierarchyServiceTest<T extends HierarchyService> {
         return Stream.of(
                 Arguments.of("{\"Pete\":\"Barbara\",\"Barbara\":\"Nick\",\"Sophie\":\"Nick\",\"Nick\":\"Pete\"}", LoopInEmployeeHierarchyException.class),
                 Arguments.of("{\"Pete\":\"Barbara\",\"Barbara\":\"Nick\",\"Nick\":\"Pete\"}", LoopInEmployeeHierarchyException.class),
+                Arguments.of("{\"Andrew\":\"Sophie\",\"Pete\":\"Barbara\",\"Barbara\":\"Nick\",\"Nick\":\"Pete\",\"Sophie\":\"Juan\"}", LoopInEmployeeHierarchyException.class),
                 Arguments.of("{\"Pete\":\"Barbara\",\"Nick\":\"Sophie\"}", MultipleRootHierarchyException.class),
                 Arguments.of("{\"Pete\":\"Barbara\",\"Pete\":\"Sophie\"}", EmployeeHasTwoSupervisorsException.class)
 
