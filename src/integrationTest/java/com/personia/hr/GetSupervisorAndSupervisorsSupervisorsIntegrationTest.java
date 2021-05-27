@@ -26,6 +26,10 @@ interface GetSupervisorAndSupervisorsSupervisorsIntegrationTest extends Personia
 
     String JONAS_SUPERVISORS = "{}";
 
+    String SOPHIE = "Sophie";
+
+    String SOPHIE_SUPERVISORS = "{\"Jonas\":{}}";
+
     @SneakyThrows
     @Test
     default void shouldReturnEmployeesSupervisorAndSupervisorsSupervisor() {
@@ -66,5 +70,19 @@ interface GetSupervisorAndSupervisorsSupervisorsIntegrationTest extends Personia
                 +JONAS+"/supervisors"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(JONAS_SUPERVISORS));
+    }
+
+    @SneakyThrows
+    @Test
+    default void shouldReturnOneSupervisorIfEmployeeBelowRoot() {
+        getMockMvc().perform(put("/api/v1/hierarchies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(FIRST_SAMPLE_INPUT_HIERARCHY))
+                .andExpect(content().json(FIRST_EXPECTED_OUTPUT))
+                .andExpect(status().isOk());
+        getMockMvc().perform(get("/api/v1/hierarchies/employees/"
+                +SOPHIE+"/supervisors"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(SOPHIE_SUPERVISORS));
     }
 }
