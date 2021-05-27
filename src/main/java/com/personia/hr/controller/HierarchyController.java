@@ -9,11 +9,15 @@ import com.personia.hr.model.EmployeeDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -32,5 +36,12 @@ public class HierarchyController {
                 JsonProcessingException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(),e);
         }
+    }
+
+    @GetMapping("/hierarchies/employees/{name}/supervisors")
+    public ResponseEntity<EmployeeDto> supervisors(@PathVariable final String name)  {
+        EmployeeDto response = EmployeeDto.builder().name("Sophie").team(
+                List.of(EmployeeDto.builder().name("Nick").build())).build();
+        return ResponseEntity.ok(response);
     }
 }
