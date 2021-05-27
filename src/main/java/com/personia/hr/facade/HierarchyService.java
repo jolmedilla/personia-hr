@@ -30,8 +30,22 @@ public class HierarchyService {
     }
 
     public EmployeeDto supervisors(final String employeeName) {
-        return  EmployeeDto.builder().name("Sophie").team(
-                List.of(EmployeeDto.builder().name("Nick").build())).build();
+        EmployeeDto supervisor = hierarchy.findEmployee(employeeName).getSupervisor();
+        EmployeeDto result;
+        if(supervisor!=null) {
+            EmployeeDto bigBoss = supervisor.getSupervisor();
+            supervisor = EmployeeDto.builder().name(supervisor.getName()).build();
+            if (bigBoss != null) {
+                bigBoss= EmployeeDto.builder().name(bigBoss.getName()).build();
+                bigBoss.add(supervisor);
+                result = bigBoss;
+            } else {
+                result = supervisor;
+            }
+        } else {
+            result = EmployeeDto.builder().build();
+        }
+        return result;
     }
 
 }

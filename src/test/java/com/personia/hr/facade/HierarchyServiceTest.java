@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,6 +59,14 @@ class HierarchyServiceTest {
 
     @Test
     void shouldReturnSubHierarchyWhenReceivesEmployeesSupervisorsRequest() {
+        EmployeeDto sophie = EmployeeDto.builder()
+                .name("Sophie")
+                .build();
+        EmployeeDto nick = EmployeeDto.builder()
+                .name("Nick").supervisor(sophie).build();
+        when(hierarchy.findEmployee(any(String.class)))
+                .thenReturn(EmployeeDto.builder().name("Pete").supervisor(nick).build()
+                        );
         EmployeeDto employeeDto = hierarchyService.supervisors("Pete");
         assertThat(employeeDto.getName()).isEqualTo("Sophie");
         assertThat(employeeDto.getTeam().size()).isEqualTo(1);

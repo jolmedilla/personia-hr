@@ -31,7 +31,10 @@ public class HierarchySimpleImpl implements Hierarchy {
             employeesWithoutSupervisor.add(supervisorName);
             return result;
         });
-        repository.get(supervisorName).add(repository.get(employeeName));
+        EmployeeDto supervisor = repository.get(supervisorName);
+        EmployeeDto employee = repository.get(employeeName);
+        supervisor.add(employee);
+        employee.setSupervisor(supervisor);
     }
 
     public EmployeeDto getRoot() throws MultipleRootHierarchyException {
@@ -39,6 +42,12 @@ public class HierarchySimpleImpl implements Hierarchy {
             throw new MultipleRootHierarchyException();
         }
         return employeesWithoutSupervisor.size() != 1 ? EmployeeDto.builder().build() : repository.get(employeesWithoutSupervisor.iterator().next());
+    }
+
+    @Override
+    public EmployeeDto findEmployee(String employeeName) {
+        return repository.get(employeeName);
+
     }
 
 }

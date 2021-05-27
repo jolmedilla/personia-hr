@@ -43,4 +43,10 @@ public class HierarchyPersistentImpl implements Hierarchy {
         return hierarchy.size() !=1 ? EmployeeDto.builder().build() : mapper.map(hierarchy.get(0),EmployeeDto.class);
     }
 
+    @Override
+    public EmployeeDto findEmployee(String employeeName) {
+        return mapper.map(employeeRepository.findOptionalByNameIs(employeeName).orElseGet(Employee::new),
+                EmployeeDto.class);
+    }
+
 }

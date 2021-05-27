@@ -9,4 +9,6 @@ public interface Hierarchy {
     void add(String employee, String supervisor);
 
     EmployeeDto getRoot() throws MultipleRootHierarchyException;
+
+    EmployeeDto findEmployee(String employeeName);
 }
