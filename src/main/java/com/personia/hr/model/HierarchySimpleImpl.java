@@ -2,8 +2,8 @@ package com.personia.hr.model;
 
 import com.personia.hr.exception.MultipleRootHierarchyException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -12,15 +12,20 @@ import java.util.Set;
 public class HierarchySimpleImpl implements Hierarchy {
 
     private final Set<String> employeesWithoutSupervisor = new HashSet<>();
-    private final Map<String,EmployeeDto> repository = new HashMap<>();
+
+    @Qualifier("inMemoryEmployeeRepository")
+    private final Map<String,EmployeeDto> repository;
 
     @Override
     public void add(String employeeName, String supervisorName) {
-        EmployeeDto employee = updateIfAbsentInRepository(null, employeeName,false);
+        repository.putIfAbsent(employeeName, EmployeeDto.builder().name(employeeName).build());
         employeesWithoutSupervisor.remove(employeeName);
-        EmployeeDto supervisor = updateIfAbsentInRepository(employeesWithoutSupervisor, supervisorName,true);
-        supervisor.add(employee);
-
+        repository.computeIfAbsent(supervisorName, v -> {
+            EmployeeDto result = EmployeeDto.builder().name(supervisorName).build();
+            employeesWithoutSupervisor.add(supervisorName);
+            return result;
+        });
+        repository.get(supervisorName).add(repository.get(employeeName));
     }
 
     public EmployeeDto getRoot() throws MultipleRootHierarchyException {
@@ -28,18 +33,6 @@ public class HierarchySimpleImpl implements Hierarchy {
             throw new MultipleRootHierarchyException();
         }
         return employeesWithoutSupervisor.size() != 1 ? EmployeeDto.builder().build() : repository.get(employeesWithoutSupervisor.iterator().next());
-    }
-
-    private EmployeeDto updateIfAbsentInRepository(Set<String> employeeSubSet, String employee, boolean updateSet) {
-        EmployeeDto result = repository.get(employee);
-        if (result == null) {
-            result = EmployeeDto.builder().name(employee).build();
-            repository.put(employee, result);
-            if (updateSet) {
-                employeeSubSet.add(employee);
-            }
-        }
-        return result;
     }
 
 }

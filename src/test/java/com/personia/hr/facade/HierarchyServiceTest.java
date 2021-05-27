@@ -15,6 +15,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.HashMap;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,7 +26,7 @@ public class HierarchyServiceTest {
             new JsonEmployeeToSupervisorParser(
                     new ObjectMapper(),
                     new GraphCycleDetector(new FloydsTraverseAlgorithm())),
-            new HierarchySimpleImpl());
+            new HierarchySimpleImpl(new HashMap<>()));
 
     static Stream<Arguments> provideCorrectSamplesWithTheirRoots() {
         return Stream.of(

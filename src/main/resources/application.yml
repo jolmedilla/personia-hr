@@ -6,7 +6,7 @@ spring:
       hibernate.dialect: org.hibernate.dialect.H2Dialect
     database: default
   datasource:
-    url: "jdbc:h2:mem:personia"
+    url: "jdbc:h2:file:./build/personia.db"
     username: "sa"
     password:
     driver-class-name: org.h2.Driver

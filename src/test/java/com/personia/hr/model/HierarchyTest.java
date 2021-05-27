@@ -1,6 +1,5 @@
 package com.personia.hr.model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.personia.hr.exception.MultipleRootHierarchyException;
 import org.junit.jupiter.api.Test;
 
