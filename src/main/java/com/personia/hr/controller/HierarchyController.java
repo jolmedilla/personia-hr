@@ -40,8 +40,6 @@ public class HierarchyController {
 
     @GetMapping("/hierarchies/employees/{name}/supervisors")
     public ResponseEntity<EmployeeDto> supervisors(@PathVariable final String name)  {
-        EmployeeDto response = EmployeeDto.builder().name("Sophie").team(
-                List.of(EmployeeDto.builder().name("Nick").build())).build();
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(hierarchyService.supervisors(name));
     }
 }

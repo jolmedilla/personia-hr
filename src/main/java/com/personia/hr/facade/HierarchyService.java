@@ -10,6 +10,8 @@ import com.personia.hr.parser.JsonEmployeeToSupervisorParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class HierarchyService {
@@ -27,5 +29,9 @@ public class HierarchyService {
         return hierarchy.getRoot();
     }
 
+    public EmployeeDto supervisors(final String employeeName) {
+        return  EmployeeDto.builder().name("Sophie").team(
+                List.of(EmployeeDto.builder().name("Nick").build())).build();
+    }
 
 }

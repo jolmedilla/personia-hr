@@ -1,12 +1,9 @@
 package com.personia.hr.facade;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.personia.hr.exception.EmployeeHasTwoSupervisorsException;
-import com.personia.hr.exception.LoopInEmployeeHierarchyException;
-import com.personia.hr.exception.MultipleRootHierarchyException;
 import com.personia.hr.model.EmployeeDto;
 import com.personia.hr.model.Hierarchy;
 import com.personia.hr.parser.JsonEmployeeToSupervisorParser;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -34,7 +32,8 @@ class HierarchyServiceTest {
     private Hierarchy hierarchy;
 
     @Test
-     void shouldReturnEmptyHierarchyWhenReceivesNoSupervisors() throws EmployeeHasTwoSupervisorsException, MultipleRootHierarchyException, LoopInEmployeeHierarchyException, JsonProcessingException {
+    @SneakyThrows
+     void shouldReturnEmptyHierarchyWhenReceivesNoSupervisors() {
         when(parser.parse(any(String.class))).thenReturn(new HashMap<>());
         when(hierarchy.getRoot()).thenReturn(EmployeeDto.builder().build());
         hierarchyService.update("{}");
@@ -44,7 +43,8 @@ class HierarchyServiceTest {
     }
 
     @Test
-     void shouldReturnBasicHierarchyWhenReceivesOneSupervisor() throws EmployeeHasTwoSupervisorsException, MultipleRootHierarchyException, LoopInEmployeeHierarchyException, JsonProcessingException {
+    @SneakyThrows
+     void shouldReturnBasicHierarchyWhenReceivesOneSupervisor() {
         when(parser.parse(any(String.class))).thenReturn(Map.of("Pete","Barbara","Barbara","Nick"));
         when(hierarchy.getRoot()).thenReturn(EmployeeDto.builder().build());
         hierarchyService.update("{}");
@@ -54,6 +54,14 @@ class HierarchyServiceTest {
         verify(hierarchy).add("Pete","Barbara");
         verify(hierarchy).add("Barbara","Nick");
         verifyNoMoreInteractions(hierarchy);
+    }
+
+    @Test
+    void shouldReturnSubHierarchyWhenReceivesEmployeesSupervisorsRequest() {
+        EmployeeDto employeeDto = hierarchyService.supervisors("Pete");
+        assertThat(employeeDto.getName()).isEqualTo("Sophie");
+        assertThat(employeeDto.getTeam().size()).isEqualTo(1);
+        assertThat(employeeDto.getTeam().get(0).getName()).isEqualTo("Nick");
     }
 
 }
