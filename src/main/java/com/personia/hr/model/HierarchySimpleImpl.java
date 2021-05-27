@@ -17,6 +17,12 @@ public class HierarchySimpleImpl implements Hierarchy {
     private final Map<String,EmployeeDto> repository;
 
     @Override
+    public void clear() {
+        employeesWithoutSupervisor.clear();
+        repository.clear();
+    }
+
+    @Override
     public void add(String employeeName, String supervisorName) {
         repository.putIfAbsent(employeeName, EmployeeDto.builder().name(employeeName).build());
         employeesWithoutSupervisor.remove(employeeName);

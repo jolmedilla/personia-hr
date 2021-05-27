@@ -17,8 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -40,6 +38,7 @@ class HierarchyServiceTest {
         when(parser.parse(any(String.class))).thenReturn(new HashMap<>());
         when(hierarchy.getRoot()).thenReturn(EmployeeDto.builder().build());
         hierarchyService.update("{}");
+        verify(hierarchy).clear();
         verify(hierarchy).getRoot();
         verifyNoMoreInteractions(hierarchy);
     }
@@ -50,6 +49,7 @@ class HierarchyServiceTest {
         when(hierarchy.getRoot()).thenReturn(EmployeeDto.builder().build());
         hierarchyService.update("{}");
         verify(parser).parse(any(String.class));
+        verify(hierarchy).clear();
         verify(hierarchy).getRoot();
         verify(hierarchy).add("Pete","Barbara");
         verify(hierarchy).add("Barbara","Nick");

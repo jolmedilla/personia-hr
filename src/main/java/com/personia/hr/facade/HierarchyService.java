@@ -22,6 +22,7 @@ public class HierarchyService {
             MultipleRootHierarchyException,
             LoopInEmployeeHierarchyException,
             JsonProcessingException {
+        hierarchy.clear();
         parser.parse(json).forEach(hierarchy::add);
         return hierarchy.getRoot();
     }

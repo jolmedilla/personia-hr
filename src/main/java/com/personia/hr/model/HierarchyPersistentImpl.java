@@ -16,6 +16,11 @@ public class HierarchyPersistentImpl implements Hierarchy {
     private final Mapper mapper;
 
     @Override
+    public void clear() {
+        employeeRepository.deleteAll();
+    }
+
+    @Override
     public void add(String employeeName, String supervisorName) {
         Employee employee = employeeRepository
                 .findOptionalByNameIs(employeeName).orElseGet(() ->
