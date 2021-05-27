@@ -17,7 +17,7 @@ public class EmployeeDtoTest {
     public void shouldSerializeEmptyHierarchy() {
         hierarchy = EmployeeDto.builder().build();
         Map<String,Object> properties = hierarchy.any();
-        assertThat(properties.size()).isEqualTo(1);
+        assertThat(properties.size()).isEqualTo(0);
     }
 
     @Test

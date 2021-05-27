@@ -22,6 +22,10 @@ interface GetSupervisorAndSupervisorsSupervisorsIntegrationTest extends Personia
 
     String INVALID_EMPLOYEE_NAME = "invalid";
 
+    String JONAS = "Jonas";
+
+    String JONAS_SUPERVISORS = "{}";
+
     @SneakyThrows
     @Test
     default void shouldReturnEmployeesSupervisorAndSupervisorsSupervisor() {
@@ -50,4 +54,17 @@ interface GetSupervisorAndSupervisorsSupervisorsIntegrationTest extends Personia
                 .andExpect(status().reason(String.format(EmployeeNotFoundException.REASON,INVALID_EMPLOYEE_NAME)));
     }
 
+    @SneakyThrows
+    @Test
+    default void shouldReturnEmptyHierarchyIfEmployeeHasNoSupervisor() {
+        getMockMvc().perform(put("/api/v1/hierarchies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(FIRST_SAMPLE_INPUT_HIERARCHY))
+                .andExpect(content().json(FIRST_EXPECTED_OUTPUT))
+                .andExpect(status().isOk());
+        getMockMvc().perform(get("/api/v1/hierarchies/employees/"
+                +JONAS+"/supervisors"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(JONAS_SUPERVISORS));
+    }
 }

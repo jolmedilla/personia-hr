@@ -30,16 +30,17 @@ public class HierarchyService {
     }
 
     public Optional<EmployeeDto> supervisors(final String employeeName) {
-        return hierarchy.findEmployee(employeeName)
-                .map(e -> Optional.ofNullable(e.getSupervisor())
-                        .orElse(EmployeeDto.builder().build()))
-                .map(e -> Optional.ofNullable(e.getSupervisor())
-                        .map(v -> {
+        var employee= hierarchy.findEmployee(employeeName);
+
+        var firstpass = employee.map(e -> Optional.ofNullable(e.getSupervisor())
+                        .orElse(EmployeeDto.builder().build()));
+        var secondpass = firstpass.map(e -> Optional.ofNullable(e.getSupervisor()).map(v -> {
                             EmployeeDto bigBoss = EmployeeDto.builder().name(v.getName()).build();
                             EmployeeDto boss = EmployeeDto.builder().name(e.getName()).build();
                             bigBoss.add(boss);
                             return bigBoss;
                         }).orElse(EmployeeDto.builder().name(e.getName()).build()));
+        return secondpass;
     }
 
 }

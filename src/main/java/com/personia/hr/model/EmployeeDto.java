@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Data
@@ -35,11 +36,11 @@ public class EmployeeDto {
 
     @JsonAnyGetter
     public Map<String,Object> any() {
-        return Collections.singletonMap(name,
+        return Optional.ofNullable(name).map(value -> Collections.<String,Object>singletonMap(value,
                 team.stream()
-                .map(EmployeeDto::any)
-                .flatMap (map -> map.entrySet().stream())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+                        .map(EmployeeDto::any)
+                        .flatMap (map -> map.entrySet().stream())
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))).orElse(Collections.<String,Object>emptyMap());
     }
 
 }
