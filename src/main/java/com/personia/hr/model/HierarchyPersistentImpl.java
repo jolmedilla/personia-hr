@@ -6,6 +6,7 @@ import com.personia.hr.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RequiredArgsConstructor
@@ -44,9 +45,8 @@ public class HierarchyPersistentImpl implements Hierarchy {
     }
 
     @Override
-    public EmployeeDto findEmployee(String employeeName) {
-        return mapper.map(employeeRepository.findOptionalByNameIs(employeeName).orElseGet(Employee::new),
-                EmployeeDto.class);
+    public Optional<EmployeeDto> findEmployee(String employeeName) {
+        return employeeRepository.findOptionalByNameIs(employeeName).map(v -> mapper.map(v,EmployeeDto.class));
     }
 
 }

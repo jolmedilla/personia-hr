@@ -2,6 +2,7 @@ package com.personia.hr.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.personia.hr.exception.EmployeeHasTwoSupervisorsException;
+import com.personia.hr.exception.EmployeeNotFoundException;
 import com.personia.hr.exception.LoopInEmployeeHierarchyException;
 import com.personia.hr.exception.MultipleRootHierarchyException;
 import com.personia.hr.facade.HierarchyService;
@@ -40,6 +41,10 @@ public class HierarchyController {
 
     @GetMapping("/hierarchies/employees/{name}/supervisors")
     public ResponseEntity<EmployeeDto> supervisors(@PathVariable final String name)  {
-        return ResponseEntity.ok(hierarchyService.supervisors(name));
+        try {
+            return ResponseEntity.ok(hierarchyService.supervisors(name).orElseThrow(() -> new EmployeeNotFoundException(name)));
+        } catch (EmployeeNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(),e);
+        }
     }
 }

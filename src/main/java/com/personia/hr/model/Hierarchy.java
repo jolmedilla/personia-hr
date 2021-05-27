@@ -2,6 +2,8 @@ package com.personia.hr.model;
 
 import com.personia.hr.exception.MultipleRootHierarchyException;
 
+import java.util.Optional;
+
 public interface Hierarchy {
 
     void clear();
@@ -10,5 +12,5 @@ public interface Hierarchy {
 
     EmployeeDto getRoot() throws MultipleRootHierarchyException;
 
-    EmployeeDto findEmployee(String employeeName);
+    Optional<EmployeeDto> findEmployee(String employeeName);
 }

@@ -13,8 +13,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -64,13 +66,15 @@ class HierarchyServiceTest {
                 .build();
         EmployeeDto nick = EmployeeDto.builder()
                 .name("Nick").supervisor(sophie).build();
+        sophie.add(nick);
         when(hierarchy.findEmployee(any(String.class)))
-                .thenReturn(EmployeeDto.builder().name("Pete").supervisor(nick).build()
+                .thenReturn(Optional.of(EmployeeDto.builder().name("Pete").supervisor(nick).build())
                         );
-        EmployeeDto employeeDto = hierarchyService.supervisors("Pete");
-        assertThat(employeeDto.getName()).isEqualTo("Sophie");
-        assertThat(employeeDto.getTeam().size()).isEqualTo(1);
-        assertThat(employeeDto.getTeam().get(0).getName()).isEqualTo("Nick");
+        hierarchyService.supervisors("Pete").ifPresentOrElse( e -> {
+            assertThat(e.getName()).isEqualTo("Sophie");
+            assertThat(e.getTeam().size()).isEqualTo(1);
+            assertThat(e.getTeam().get(0).getName()).isEqualTo("Nick");
+        },()->fail("Hierarchy Service return Optional.empty and we expected Sophie->Nick"));
     }
 
 }

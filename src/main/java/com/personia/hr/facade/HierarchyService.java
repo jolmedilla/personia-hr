@@ -10,7 +10,7 @@ import com.personia.hr.parser.JsonEmployeeToSupervisorParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -29,23 +29,17 @@ public class HierarchyService {
         return hierarchy.getRoot();
     }
 
-    public EmployeeDto supervisors(final String employeeName) {
-        EmployeeDto supervisor = hierarchy.findEmployee(employeeName).getSupervisor();
-        EmployeeDto result;
-        if(supervisor!=null) {
-            EmployeeDto bigBoss = supervisor.getSupervisor();
-            supervisor = EmployeeDto.builder().name(supervisor.getName()).build();
-            if (bigBoss != null) {
-                bigBoss= EmployeeDto.builder().name(bigBoss.getName()).build();
-                bigBoss.add(supervisor);
-                result = bigBoss;
-            } else {
-                result = supervisor;
-            }
-        } else {
-            result = EmployeeDto.builder().build();
-        }
-        return result;
+    public Optional<EmployeeDto> supervisors(final String employeeName) {
+        return hierarchy.findEmployee(employeeName)
+                .map(e -> Optional.ofNullable(e.getSupervisor())
+                        .orElse(EmployeeDto.builder().build()))
+                .map(e -> Optional.ofNullable(e.getSupervisor())
+                        .map(v -> {
+                            EmployeeDto bigBoss = EmployeeDto.builder().name(v.getName()).build();
+                            EmployeeDto boss = EmployeeDto.builder().name(e.getName()).build();
+                            bigBoss.add(boss);
+                            return bigBoss;
+                        }).orElse(EmployeeDto.builder().name(e.getName()).build()));
     }
 
 }

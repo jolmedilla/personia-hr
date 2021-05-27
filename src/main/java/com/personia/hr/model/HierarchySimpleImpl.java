@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -45,9 +46,8 @@ public class HierarchySimpleImpl implements Hierarchy {
     }
 
     @Override
-    public EmployeeDto findEmployee(String employeeName) {
-        return repository.get(employeeName);
-
+    public Optional<EmployeeDto> findEmployee(String employeeName) {
+        return Optional.ofNullable(repository.get(employeeName));
     }
 
 }

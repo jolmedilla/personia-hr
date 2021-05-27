@@ -1,5 +1,6 @@
 package com.personia.hr;
 
+import com.personia.hr.exception.EmployeeNotFoundException;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -19,6 +20,8 @@ interface GetSupervisorAndSupervisorsSupervisorsIntegrationTest extends Personia
 
     String FIRST_SAMPLE_EMPLOYEE_EXPECTED_RESPONSE = "{\"Sophie\": {\"Nick\": {}}}";
 
+    String INVALID_EMPLOYEE_NAME = "invalid";
+
     @SneakyThrows
     @Test
     default void shouldReturnEmployeesSupervisorAndSupervisorsSupervisor() {
@@ -32,4 +35,19 @@ interface GetSupervisorAndSupervisorsSupervisorsIntegrationTest extends Personia
                 .andExpect(status().isOk())
                 .andExpect(content().json(FIRST_SAMPLE_EMPLOYEE_EXPECTED_RESPONSE));
     }
+
+    @SneakyThrows
+    @Test
+    default void shouldReturn404IfEmployeeNotFound() {
+        getMockMvc().perform(put("/api/v1/hierarchies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(FIRST_SAMPLE_INPUT_HIERARCHY))
+                .andExpect(content().json(FIRST_EXPECTED_OUTPUT))
+                .andExpect(status().isOk());
+        getMockMvc().perform(get("/api/v1/hierarchies/employees/"
+                +INVALID_EMPLOYEE_NAME+"/supervisors"))
+                .andExpect(status().isNotFound())
+                .andExpect(status().reason(String.format(EmployeeNotFoundException.REASON,INVALID_EMPLOYEE_NAME)));
+    }
+
 }
