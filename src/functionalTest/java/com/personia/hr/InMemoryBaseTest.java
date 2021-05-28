@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.Map;
 
-public abstract class InMemoryBaseIntegrationTest extends BaseIntegrationTest{
+public abstract class InMemoryBaseTest extends BaseTest {
 
 
     @Autowired

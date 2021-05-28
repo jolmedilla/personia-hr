@@ -6,6 +6,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest(properties = {"toggles.use-persistence=false"})
 @AutoConfigureMockMvc
-public class CreateOrReplaceHierarchyInMemoryImplIntegrationTest extends InMemoryBaseIntegrationTest implements CreateOrReplaceHierarchyIntegrationTest {
+public class CreateOrReplaceHierarchyInMemoryImplTest extends InMemoryBaseTest implements CreateOrReplaceHierarchyTest {
 
 }

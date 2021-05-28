@@ -9,7 +9,7 @@ plugins {
 apply plugin: 'io.spring.dependency-management'
 
 sourceSets {
-    integrationTest {
+    functionalTest {
         compileClasspath += sourceSets.main.output + configurations.testCompile
         runtimeClasspath += output + compileClasspath + configurations.testRuntime
     }
@@ -17,23 +17,23 @@ sourceSets {
 
 idea {
     module {
-        testSourceDirs += sourceSets.integrationTest.java.srcDirs
-        testResourceDirs += sourceSets.integrationTest.resources.srcDirs
-        scopes.TEST.plus += [ configurations.integrationTestCompile ]
+        testSourceDirs += sourceSets.functionalTest.java.srcDirs
+        testResourceDirs += sourceSets.functionalTest.resources.srcDirs
+        scopes.TEST.plus += [ configurations.functionalTestCompile ]
     }
 }
 
 configurations {
-    integrationTestImplementation.extendsFrom testImplementation
-    integrationtestRuntime.extendsFrom testRuntime
-    integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
+    functionalTestImplementation.extendsFrom testImplementation
+    functionaltestRuntime.extendsFrom testRuntime
+    functionalTestRuntimeOnly.extendsFrom testRuntimeOnly
 }
 
-task integrationTest(type: Test) {
+task functionalTest(type: Test) {
     description = 'Runs the integration tests.'
     group = 'verification'
-    testClassesDirs = sourceSets.integrationTest.output.classesDirs
-    classpath = sourceSets.integrationTest.runtimeClasspath
+    testClassesDirs = sourceSets.functionalTest.output.classesDirs
+    classpath = sourceSets.functionalTest.runtimeClasspath
     outputs.upToDateWhen { false }
     useJUnitPlatform()
     mustRunAfter test
@@ -72,6 +72,9 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    testLogging {
+        events = ['FAILED', 'PASSED', 'STANDARD_OUT']
+    }
 }
 
-check.dependsOn integrationTest
+check.dependsOn functionalTest

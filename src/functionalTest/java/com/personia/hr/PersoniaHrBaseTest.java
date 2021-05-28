@@ -6,7 +6,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.Charset;
 
-interface PersoniaHrBaseIntegrationTest {
+interface PersoniaHrBaseTest {
     
     String  FIRST_SAMPLE_INPUT_HIERARCHY = "{ " +
             " \"Pete\": \"Nick\"," +

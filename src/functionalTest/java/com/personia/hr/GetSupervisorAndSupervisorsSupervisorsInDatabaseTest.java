@@ -5,5 +5,5 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest(properties = {"toggles.use-persistence=true"})
 @AutoConfigureMockMvc
-public class GetSupervisorAndSupervisorsSupervisorsInDatabaseIntegrationTest extends InDatabaseBaseIntegrationTest implements GetSupervisorAndSupervisorsSupervisorsIntegrationTest {
+public class GetSupervisorAndSupervisorsSupervisorsInDatabaseTest extends InDatabaseBaseTest implements GetSupervisorAndSupervisorsSupervisorsTest {
 }

@@ -20,13 +20,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Definition of tests that any implementation of the this User story must comply with.
  * User Story: CREATE/REPLACE COMPANY HIERARCHY
  */
-interface CreateOrReplaceHierarchyIntegrationTest extends PersoniaHrBaseIntegrationTest {
+interface CreateOrReplaceHierarchyTest extends PersoniaHrBaseTest {
 
     static Stream<Arguments> provideWrongSamplesAndResponseMessages() {
         return Stream.of(
-                Arguments.of(CreateOrReplaceHierarchyInMemoryImplIntegrationTest.TWO_SUPERVISORS_SAMPLE, EmployeeHasTwoSupervisorsException.REASON),
-                Arguments.of(CreateOrReplaceHierarchyInMemoryImplIntegrationTest.LOOP_IN_HIERARCHY, LoopInEmployeeHierarchyException.REASON),
-                Arguments.of(CreateOrReplaceHierarchyInMemoryImplIntegrationTest.MULTIPLE_ROOT_SAMPLE, MultipleRootHierarchyException.REASON)
+                Arguments.of(CreateOrReplaceHierarchyInMemoryImplTest.TWO_SUPERVISORS_SAMPLE, EmployeeHasTwoSupervisorsException.REASON),
+                Arguments.of(CreateOrReplaceHierarchyInMemoryImplTest.LOOP_IN_HIERARCHY, LoopInEmployeeHierarchyException.REASON),
+                Arguments.of(CreateOrReplaceHierarchyInMemoryImplTest.MULTIPLE_ROOT_SAMPLE, MultipleRootHierarchyException.REASON)
         );
     }
 

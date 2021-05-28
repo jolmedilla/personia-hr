@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Definition of tests that any implementation of the this User story must comply with.
  * User Story: CREATE/REPLACE COMPANY HIERARCHY
  */
-interface GetSupervisorAndSupervisorsSupervisorsIntegrationTest extends PersoniaHrBaseIntegrationTest{
+interface GetSupervisorAndSupervisorsSupervisorsTest extends PersoniaHrBaseTest {
 
     String FIRST_SAMPLE_EMPLOYEE = "Pete";
 

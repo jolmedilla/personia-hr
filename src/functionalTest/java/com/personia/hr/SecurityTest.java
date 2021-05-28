@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(properties = {"toggles.use-persistence=true"})
 @AutoConfigureMockMvc
-public class SecurityTest extends BaseIntegrationTest {
+public class SecurityTest extends BaseTest {
 
     @Test
     void shouldReturnUnauthorizedWhenReceivingRequest() throws Exception {
