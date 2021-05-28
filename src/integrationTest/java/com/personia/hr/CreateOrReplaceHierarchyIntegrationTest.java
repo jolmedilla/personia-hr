@@ -29,11 +29,13 @@ interface CreateOrReplaceHierarchyIntegrationTest extends PersoniaHrBaseIntegrat
                 Arguments.of(CreateOrReplaceHierarchyInMemoryImplIntegrationTest.MULTIPLE_ROOT_SAMPLE, MultipleRootHierarchyException.REASON)
         );
     }
+
     @Test
     default void shouldReturnOkWhenReceivingWellFormedHierarchy() throws Exception {
 
         getMockMvc().perform(put("/api/v1/hierarchies")
                 .contentType(MediaType.APPLICATION_JSON)
+                .headers(createHeaders(USERNAME,PASSWORD))
                 .content(FIRST_SAMPLE_INPUT_HIERARCHY))
                 .andExpect(content().json(FIRST_EXPECTED_OUTPUT))
                 .andExpect(status().isOk());
@@ -45,11 +47,13 @@ interface CreateOrReplaceHierarchyIntegrationTest extends PersoniaHrBaseIntegrat
 
         getMockMvc().perform(put("/api/v1/hierarchies")
                 .contentType(MediaType.APPLICATION_JSON)
+                .headers(createHeaders(USERNAME,PASSWORD))
                 .content(FIRST_SAMPLE_INPUT_HIERARCHY))
                 .andExpect(content().json(FIRST_EXPECTED_OUTPUT))
                 .andExpect(status().isOk());
         getMockMvc().perform(put("/api/v1/hierarchies")
                 .contentType(MediaType.APPLICATION_JSON)
+                .headers(createHeaders(USERNAME,PASSWORD))
                 .content(SECOND_SAMPLE_INPUT_HIERARCHY))
                 .andExpect(content().json(SECOND_EXPECTED_OUTPUT))
                 .andExpect(status().isOk());
@@ -61,6 +65,7 @@ interface CreateOrReplaceHierarchyIntegrationTest extends PersoniaHrBaseIntegrat
     default void shouldReturnBadRequestWithCorrectErrorMessage(String requestBody, String reason) {
         getMockMvc().perform(put("/api/v1/hierarchies")
                 .contentType(MediaType.APPLICATION_JSON)
+                .headers(createHeaders(USERNAME,PASSWORD))
                 .content(requestBody))
                 .andExpect(status().isBadRequest())
                 .andExpect(status().reason(reason));

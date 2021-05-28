@@ -35,11 +35,13 @@ interface GetSupervisorAndSupervisorsSupervisorsIntegrationTest extends Personia
     default void shouldReturnEmployeesSupervisorAndSupervisorsSupervisor() {
         getMockMvc().perform(put("/api/v1/hierarchies")
                 .contentType(MediaType.APPLICATION_JSON)
+                .headers(createHeaders(USERNAME,PASSWORD))
                 .content(FIRST_SAMPLE_INPUT_HIERARCHY))
                 .andExpect(content().json(FIRST_EXPECTED_OUTPUT))
                 .andExpect(status().isOk());
         getMockMvc().perform(get("/api/v1/hierarchies/employees/"
-                +FIRST_SAMPLE_EMPLOYEE+"/supervisors"))
+                +FIRST_SAMPLE_EMPLOYEE+"/supervisors")
+                .headers(createHeaders(USERNAME,PASSWORD)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(FIRST_SAMPLE_EMPLOYEE_EXPECTED_RESPONSE));
     }
@@ -49,11 +51,13 @@ interface GetSupervisorAndSupervisorsSupervisorsIntegrationTest extends Personia
     default void shouldReturn404IfEmployeeNotFound() {
         getMockMvc().perform(put("/api/v1/hierarchies")
                 .contentType(MediaType.APPLICATION_JSON)
+                .headers(createHeaders(USERNAME,PASSWORD))
                 .content(FIRST_SAMPLE_INPUT_HIERARCHY))
                 .andExpect(content().json(FIRST_EXPECTED_OUTPUT))
                 .andExpect(status().isOk());
         getMockMvc().perform(get("/api/v1/hierarchies/employees/"
-                +INVALID_EMPLOYEE_NAME+"/supervisors"))
+                +INVALID_EMPLOYEE_NAME+"/supervisors")
+                .headers(createHeaders(USERNAME,PASSWORD)))
                 .andExpect(status().isNotFound())
                 .andExpect(status().reason(String.format(EmployeeNotFoundException.REASON,INVALID_EMPLOYEE_NAME)));
     }
@@ -63,11 +67,13 @@ interface GetSupervisorAndSupervisorsSupervisorsIntegrationTest extends Personia
     default void shouldReturnEmptyHierarchyIfEmployeeHasNoSupervisor() {
         getMockMvc().perform(put("/api/v1/hierarchies")
                 .contentType(MediaType.APPLICATION_JSON)
+                .headers(createHeaders(USERNAME,PASSWORD))
                 .content(FIRST_SAMPLE_INPUT_HIERARCHY))
                 .andExpect(content().json(FIRST_EXPECTED_OUTPUT))
                 .andExpect(status().isOk());
         getMockMvc().perform(get("/api/v1/hierarchies/employees/"
-                +JONAS+"/supervisors"))
+                +JONAS+"/supervisors")
+                .headers(createHeaders(USERNAME,PASSWORD)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(JONAS_SUPERVISORS));
     }
@@ -77,11 +83,13 @@ interface GetSupervisorAndSupervisorsSupervisorsIntegrationTest extends Personia
     default void shouldReturnOneSupervisorIfEmployeeBelowRoot() {
         getMockMvc().perform(put("/api/v1/hierarchies")
                 .contentType(MediaType.APPLICATION_JSON)
+                .headers(createHeaders(USERNAME,PASSWORD))
                 .content(FIRST_SAMPLE_INPUT_HIERARCHY))
                 .andExpect(content().json(FIRST_EXPECTED_OUTPUT))
                 .andExpect(status().isOk());
         getMockMvc().perform(get("/api/v1/hierarchies/employees/"
-                +SOPHIE+"/supervisors"))
+                +SOPHIE+"/supervisors")
+                .headers(createHeaders(USERNAME,PASSWORD)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(SOPHIE_SUPERVISORS));
     }
